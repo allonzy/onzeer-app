@@ -8,11 +8,11 @@ import android.view.View;
 import android.widget.*;
 
 import com.example.allonzo.onzeer.R;
-import com.example.allonzo.onzeer.controller.CommandAnalyser;
-import com.example.allonzo.onzeer.controller.CommandEnum;
+//import com.example.allonzo.onzeer.controller.CommandAnalyser;
+//import com.example.allonzo.onzeer.controller.CommandEnum;
 
 public class MainActivity extends Activity implements View.OnClickListener{
-    private CommandAnalyser vocalCommandAnalyser;
+    //private CommandAnalyser vocalCommandAnalyser;
     private EditText homeSearchInput;
     private Button vocalCommandButton;
     private ImageButton searchButton;
@@ -47,16 +47,16 @@ public class MainActivity extends Activity implements View.OnClickListener{
     }
     public void textSearchAction(){
         Intent intent = new Intent(this,MusicPlayActivity.class);
-        intent.putExtra("commandValue",homeSearchInput.getText());
+        //intent.putExtra("commandValue",homeSearchInput.getText());
         this.startActivity(intent);
     }
     public void searchResultAction(){
-        Log.d("searchResult",vocalCommandAnalyser.getCommandResult().toString());
+        //Log.d("searchResult",vocalCommandAnalyser.getCommandResult().toString());
     }
     public void playAction(){
-        Intent intent = new Intent(this,MusicPlayActivity.class);
+       /* Intent intent = new Intent(this,MusicPlayActivity.class);
         Log.d("play",vocalCommandAnalyser.getCommandResult().toString());
         intent.putExtra("commandValue",vocalCommandAnalyser.getCommandResult().get(CommandEnum.PLAY));
-        this.startActivity(intent);
+        this.startActivity(intent)/**/
     }
 }

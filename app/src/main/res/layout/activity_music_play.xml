@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/Title"
+        android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0.06"
@@ -38,7 +38,7 @@
             android:id="@+id/play_button"
             android:layout_width="224dp"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/play" />
+            app:srcCompat="@drawable/pause" />
 
         <ImageButton
             android:id="@+id/next_button"

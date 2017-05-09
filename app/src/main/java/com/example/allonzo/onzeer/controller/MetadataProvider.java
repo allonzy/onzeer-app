@@ -1,5 +1,6 @@
 package com.example.allonzo.onzeer.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,14 +15,16 @@ public class MetadataProvider {
         this.url=WEBSERVICE_URL+command+"?value="+commandValue;
     }
     public String getTitle(){
-        return "";
+        return "Fun radio";
     }
     public String getStreamingUrl(){
         return "http://streaming.radio.funradio.fr/fun-1-48-192";
-
     }
     public Map<String,String> getMetadata(){
-        return null;
+        Map<String,String> metadata = new HashMap<String,String>();
+        metadata.put("radio","fun");
+        metadata.put("tags","radio libre, musique pop");
+        return metadata;
 
     }
     public String getNextSuggestion(){

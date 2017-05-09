@@ -37,12 +37,14 @@ public class MusicPlayActivity extends AppCompatActivity implements View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.metadataProvider = new MetadataProvider(CommandEnum.PLAY,
-                (String)savedInstanceState.get("commandValue"));
+                //(String)savedInstanceState.get("commandValue"));
+                "hotel california");
         this.musicPlayer = new MusicPlayer(this.metadataProvider);
         setContentView(R.layout.activity_music_play);
         findViews();
-        runProgressBar();
+        //runProgressBar();
         updateMusic();
+        this.isPlaying = false;
     }
     private void updateMusic(){
         this.setMusicMetadata(metadataProvider.getMetadata());
@@ -82,6 +84,9 @@ public class MusicPlayActivity extends AppCompatActivity implements View.OnClick
         nextButton.setOnClickListener( this );
     }
     private void setMusicMetadata(Map<String,String> metadata){
+        if (metadata == null){
+            return;
+        }
         musicMetadata.removeAllViewsInLayout();
         for (Map.Entry<String, String> entry : metadata.entrySet()){
             String key = entry.getKey();
@@ -92,14 +97,16 @@ public class MusicPlayActivity extends AppCompatActivity implements View.OnClick
         }
     }
     private void setTitle(String title){
-        this.musicTitle.setText(title);
+        if(title != null){
+            this.musicTitle.setText(title);
+        }
     }
     @Override
     public void onClick(View v) {
         if ( v == previousButton ) {
             this.previous();
         } else if ( v == playButton ) {
-            if (this.isPlaying){
+            if (musicPlayer.isPlaying()){
                 this.pause();
             }else{
                 this.play();
@@ -128,8 +135,6 @@ public class MusicPlayActivity extends AppCompatActivity implements View.OnClick
     private void play(){
         playButton.setImageDrawable(getDrawable(R.drawable.pause));
         this.musicPlayer.playMusic();
-        isPlaying = true;
-
     }
     private void pause(){
         playButton.setImageDrawable(getDrawable(R.drawable.play));
