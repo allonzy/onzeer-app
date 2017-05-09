@@ -36,19 +36,23 @@ public class MusicPlayActivity extends AppCompatActivity implements View.OnClick
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.metadataProvider = new MetadataProvider(CommandEnum.PLAY,
-                //(String)savedInstanceState.get("commandValue"));
-                "hotel california");
+        Bundle extras = getIntent().getExtras();
+        this.metadataProvider = new MetadataProvider(
+                (CommandEnum) extras.get("command"),
+                extras.getString("commandValue")
+            );
         this.musicPlayer = new MusicPlayer(this.metadataProvider);
         setContentView(R.layout.activity_music_play);
         findViews();
-        //runProgressBar();
+        runProgressBar();
         updateMusic();
-        this.isPlaying = false;
+
     }
     private void updateMusic(){
+
         this.setMusicMetadata(metadataProvider.getMetadata());
         this.setTitle(metadataProvider.getTitle());
+        musicPlayer.startMusic();
     }
     private void runProgressBar(){
         new Thread(new Runnable() {
@@ -78,7 +82,6 @@ public class MusicPlayActivity extends AppCompatActivity implements View.OnClick
         nextButton = (ImageButton)findViewById( R.id.next_button );
         musicProgressionBar = (ProgressBar)findViewById( R.id.music_progression );
         musicMetadata = (ListView)findViewById( R.id.music_metadata );
-
         previousButton.setOnClickListener( this );
         playButton.setOnClickListener( this );
         nextButton.setOnClickListener( this );
@@ -109,7 +112,7 @@ public class MusicPlayActivity extends AppCompatActivity implements View.OnClick
             if (musicPlayer.isPlaying()){
                 this.pause();
             }else{
-                this.play();
+                this.resume();
             }
         } else if ( v == nextButton ) {
             this.next();
@@ -127,18 +130,20 @@ public class MusicPlayActivity extends AppCompatActivity implements View.OnClick
         try {
             this.musicPlayer.next();
             this.updateMusic();
+            musicPlayer.startMusic();
         }catch (MusicPlayerException e){
 
         }
 
     }
-    private void play(){
+    private void resume(){
         playButton.setImageDrawable(getDrawable(R.drawable.pause));
-        this.musicPlayer.playMusic();
+        this.musicPlayer.resumeMusic();
     }
     private void pause(){
         playButton.setImageDrawable(getDrawable(R.drawable.play));
-        this.musicPlayer.stopMusic();
+        this.musicPlayer.pauseMusic();
         isPlaying = false;
     }
+
 }

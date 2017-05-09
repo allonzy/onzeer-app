@@ -29,14 +29,14 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener{
         this.mediaPlayer = new MediaPlayer();
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         this.url = metadataProvider.getStreamingUrl();
-        this.playMusic();
+        this.startMusic();
 
     }
     public void update(){
         this.url = metadataProvider.getStreamingUrl();
-        this.playMusic();
+        this.startMusic();
     }
-    public void playMusic(){
+    public void startMusic(){
         try {
             mediaPlayer.setDataSource(url);
             mediaPlayer.setOnPreparedListener(this);
@@ -56,8 +56,23 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener{
     public void stopMusic(){
         mediaPlayer.stop();
     }
+    public void pauseMusic(){
+        mediaPlayer.pause();
+    }
+    public void resumeMusic(){
+        mediaPlayer.start();
+    }
     public float getProgression(){
-        return mediaPlayer.getCurrentPosition()/mediaPlayer.getDuration();
+        /*
+        float value = mediaPlayer.getCurrentPosition()/mediaPlayer.getDuration();
+        if(value > 0 && value < 1){
+            return value;
+        }else if(value < 0){
+            return 0;
+        }else {
+            return 100;
+        }/**/
+        return 0;
     }
     public MetadataProvider next() throws MusicPlayerException{
         try{
@@ -66,7 +81,7 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener{
                 throw new MusicPlayerException();
             }
             this.url = url;
-            this.playMusic();
+            this.startMusic();
             return this.metadataProvider;
         }catch (NoSuchElementException e){
             throw new MusicPlayerException();
@@ -76,7 +91,7 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener{
         try{
             String url = playHistory.pop();
             this.url = url;
-            this.playMusic();
+            this.startMusic();
             return this.metadataProvider;
         }catch (EmptyStackException e){
             throw new MusicPlayerException();

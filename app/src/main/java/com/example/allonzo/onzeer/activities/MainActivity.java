@@ -1,6 +1,8 @@
 package com.example.allonzo.onzeer.activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,11 +10,14 @@ import android.view.View;
 import android.widget.*;
 
 import com.example.allonzo.onzeer.R;
-//import com.example.allonzo.onzeer.controller.CommandAnalyser;
-//import com.example.allonzo.onzeer.controller.CommandEnum;
+import com.example.allonzo.onzeer.controller.CommandAnalyser;
+import com.example.allonzo.onzeer.controller.CommandEnum;
+
+import java.util.Collections;
+import java.util.Map;
 
 public class MainActivity extends Activity implements View.OnClickListener{
-    //private CommandAnalyser vocalCommandAnalyser;
+    private CommandAnalyser commandAnalyser;
     private EditText homeSearchInput;
     private Button vocalCommandButton;
     private ImageButton searchButton;
@@ -21,7 +26,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         findViews();
-        //vocalCommandAnalyser = new CommandAnalyser(this);
+        commandAnalyser = new CommandAnalyser(this);
     }
 
     private void findViews() {
@@ -43,20 +48,47 @@ public class MainActivity extends Activity implements View.OnClickListener{
     }
 
     public void vocalSearchAction(){
-        //vocalCommandAnalyser.startListening();
+        commandAnalyser.startListening();
     }
     public void textSearchAction(){
-        Intent intent = new Intent(this,MusicPlayActivity.class);
-        //intent.putExtra("commandValue",homeSearchInput.getText());
-        this.startActivity(intent);
+
+        commandAnalyser.analyseCommand(
+                Collections.singletonList(homeSearchInput.getText().toString())
+        );
+        this.dispatchCommands(commandAnalyser.getCommandResult());
+
+    }
+    public void dispatchCommands(Map<CommandEnum,String> commandList) {
+        if(commandList.size() == 1){
+            if(commandList.containsKey(CommandEnum.PLAY)){
+                Intent intent = new Intent(this,MusicPlayActivity.class);
+                intent.putExtra("command",CommandEnum.PLAY);
+                intent.putExtra("commandValue",homeSearchInput.getText().toString());
+                this.startActivity(intent);
+            }/*else if(){
+                //TODO other command
+            }/**/
+        }else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("commande non reconnue play/jouer pour jouer une musique")
+            .setTitle("command not found")
+            .setCancelable(true)
+            .setPositiveButton("OK",new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.cancel();
+                }
+            });
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+        }
+    }
+    private void showSimplePopup(String message){
+
     }
     public void searchResultAction(){
         //Log.d("searchResult",vocalCommandAnalyser.getCommandResult().toString());
     }
     public void playAction(){
-       /* Intent intent = new Intent(this,MusicPlayActivity.class);
-        Log.d("play",vocalCommandAnalyser.getCommandResult().toString());
-        intent.putExtra("commandValue",vocalCommandAnalyser.getCommandResult().get(CommandEnum.PLAY));
-        this.startActivity(intent)/**/
+        this.dispatchCommands(commandAnalyser.getCommandResult());
     }
 }

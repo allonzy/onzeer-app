@@ -92,17 +92,7 @@ public class CommandAnalyser implements RecognitionListener {
     @Override
     public void onResults(Bundle data) {
         List<String> results = data.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-        commandResult = new HashMap<CommandEnum,String>();
-        for(CommandEnum command : CommandEnum.values()){
-            Pattern pattern = Pattern.compile("("+command.getRegex()+") (.*)");
-            for (String commandText : results) {
-                Matcher matcher = pattern.matcher(commandText);
-                if (matcher.matches()){
-                    String commandValue = matcher.group(matcher.groupCount());
-                    commandResult.put(command,commandValue);
-                }
-            }
-        }
+        this.analyseCommand(results);
         if (commandResult.size() > 1)
             caller.searchResultAction();
         else if(commandResult.size() > 1){
@@ -111,7 +101,19 @@ public class CommandAnalyser implements RecognitionListener {
         else
             caller.vocalSearchAction();
     }
-
+    public void analyseCommand(List<String> possibleCommand){
+        commandResult = new HashMap<CommandEnum,String>();
+        for(CommandEnum command : CommandEnum.values()){
+            Pattern pattern = Pattern.compile("("+command.getRegex()+") (.*)");
+            for (String commandText : possibleCommand) {
+                Matcher matcher = pattern.matcher(commandText);
+                if (matcher.matches()){
+                    String commandValue = matcher.group(matcher.groupCount());
+                    commandResult.put(command,commandValue);
+                }
+            }
+        }
+    }
     @Override
     public void onPartialResults(Bundle partialResults) {
     }
