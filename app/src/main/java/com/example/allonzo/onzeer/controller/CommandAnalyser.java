@@ -13,15 +13,16 @@ import com.example.allonzo.onzeer.activities.MainActivity;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+import android.util.Log;
 /**
  * Created by Allonzo on 08/05/2017.
  */
 
-public class CommandAnalyser implements RecognitionListener {
+public class CommandAnalyser implements  RecognitionListener{
     private SpeechRecognizer speechRecognizer;
     private MainActivity caller;
     private Intent intent;
@@ -32,7 +33,12 @@ public class CommandAnalyser implements RecognitionListener {
         this.caller = caller;
         Context context = caller.getApplicationContext();
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context);
-        intent = RecognizerIntent.getVoiceDetailsIntent(context);
+        speechRecognizer.setRecognitionListener(this);
+        commandResult = new HashMap<>();
+        intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.FRANCE);
     }
     public Map<CommandEnum,String> getCommandResult(){
         return commandResult;
@@ -41,34 +47,17 @@ public class CommandAnalyser implements RecognitionListener {
         speechRecognizer.startListening(intent);
     }
 
-    @Override
-    public void onReadyForSpeech(Bundle params) {
-        status.setText("ready");
-    }
-
-    @Override
-    public void onBeginningOfSpeech() {
-        status.setText("listen");
-    }
-
-    @Override
-    public void onRmsChanged(float rmsdB) {
-        String s = String.format("recieve : % 2.2f[dB]", rmsdB);
-        subStatus.setText(s);
-    }
-
-    @Override
-    public void onBufferReceived(byte[] buffer) {
-    }
-
-    @Override
-    public void onEndOfSpeech() {
-        status.setText("listen complete");
-
-    }
-
+    @Override public void onReadyForSpeech(Bundle params){Log.d("CommandAnalyser","onReadyForSpeech");}
+    @Override public void onBeginningOfSpeech(){Log.d("CommandAnalyser","onBeginningOfSpeech");}
+    @Override public void onRmsChanged(float rms_dB){Log.d("CommandAnalyser","onRmsChanged");}
+    @Override public void onBufferReceived(byte[] buffer){Log.d("CommandAnalyser","onBufferReceived");}
+    @Override public void onEndOfSpeech(){Log.d("CommandAnalyser","onEndOfSpeech");}
+    @Override public void onPartialResults(Bundle partialResults){Log.d("CommandAnalyser","onPartialResults");}
+    @Override public void onEvent(int eventType, Bundle params){Log.d("CommandAnalyser","onEvent");}
     @Override
     public void onError(int error) {
+        Log.d("CommandAnalyser","onError");
+
         switch (error) {
             case SpeechRecognizer.ERROR_AUDIO:
                 subStatus.setText("ERROR_AUDIO");
@@ -91,36 +80,41 @@ public class CommandAnalyser implements RecognitionListener {
 
     @Override
     public void onResults(Bundle data) {
+        Log.d("CommandAnalyser","onResults");
         List<String> results = data.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
         this.analyseCommand(results);
-        if (commandResult.size() > 1)
-            caller.searchResultAction();
-        else if(commandResult.size() > 1){
+        Log.d("Debug",commandResult.toString());
+
+        if (commandResult.isEmpty() == false){
+            Log.d("CommandAnalyser","onResultsSuccess");
             caller.playAction();
         }
-        else
+       /* else if(commandResult.size() == 1){
+            Log.d("CommandAnalyser","onResultsSuccess");
+            caller.playAction();
+        }*/
+        else{
             caller.vocalSearchAction();
+            Log.d("CommandAnalyser","onResultsError");
+
+        }
     }
     public void analyseCommand(List<String> possibleCommand){
-        commandResult = new HashMap<CommandEnum,String>();
+
+        //commandResult = new HashMap<CommandEnum,String>();
         for(CommandEnum command : CommandEnum.values()){
             Pattern pattern = Pattern.compile("("+command.getRegex()+") (.*)");
             for (String commandText : possibleCommand) {
+                Log.d("Commands",commandText);
                 Matcher matcher = pattern.matcher(commandText);
                 if (matcher.matches()){
                     String commandValue = matcher.group(matcher.groupCount());
+                    Log.d("CommandsSelected",commandValue);
                     commandResult.put(command,commandValue);
                 }
             }
         }
     }
-    @Override
-    public void onPartialResults(Bundle partialResults) {
-    }
 
-    @Override
-    public void onEvent(int eventType, Bundle params) {
-
-    }
 }
 

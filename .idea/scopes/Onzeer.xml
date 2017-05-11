@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="Onzeer" pattern="file[app]:libs//*" />
+</component>
