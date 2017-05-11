@@ -10,6 +10,7 @@ import android.speech.SpeechRecognizer;
 import android.widget.TextView;
 
 import com.example.allonzo.onzeer.activities.MainActivity;
+import com.example.allonzo.onzeer.activities.VocalCommandActivity;
 
 import java.util.HashMap;
 import java.util.List;
@@ -24,17 +25,16 @@ import android.util.Log;
 
 public class CommandAnalyser implements  RecognitionListener{
     private SpeechRecognizer speechRecognizer;
-    private MainActivity caller;
+    private VocalCommandActivity caller;
     private Intent intent;
     private Map<CommandEnum,String> commandResult;
     private TextView status;
     private TextView subStatus;
-    public CommandAnalyser(MainActivity caller){
+    public CommandAnalyser(VocalCommandActivity caller){
         this.caller = caller;
         Context context = caller.getApplicationContext();
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context);
         speechRecognizer.setRecognitionListener(this);
-        commandResult = new HashMap<>();
         intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                 RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
@@ -46,7 +46,9 @@ public class CommandAnalyser implements  RecognitionListener{
     public void startListening(){
         speechRecognizer.startListening(intent);
     }
-
+    public String get(CommandEnum command){
+        return commandResult.get(command);
+    }
     @Override public void onReadyForSpeech(Bundle params){Log.d("CommandAnalyser","onReadyForSpeech");}
     @Override public void onBeginningOfSpeech(){Log.d("CommandAnalyser","onBeginningOfSpeech");}
     @Override public void onRmsChanged(float rms_dB){Log.d("CommandAnalyser","onRmsChanged");}
@@ -87,7 +89,7 @@ public class CommandAnalyser implements  RecognitionListener{
 
         if (commandResult.isEmpty() == false){
             Log.d("CommandAnalyser","onResultsSuccess");
-            caller.playAction();
+            caller.onVocalCommandResult();
         }
        /* else if(commandResult.size() == 1){
             Log.d("CommandAnalyser","onResultsSuccess");
@@ -101,9 +103,9 @@ public class CommandAnalyser implements  RecognitionListener{
     }
     public void analyseCommand(List<String> possibleCommand){
 
-        //commandResult = new HashMap<CommandEnum,String>();
+        commandResult = new HashMap<CommandEnum,String>();
         for(CommandEnum command : CommandEnum.values()){
-            Pattern pattern = Pattern.compile("("+command.getRegex()+") (.*)");
+            Pattern pattern = Pattern.compile("("+command.getRegex()+")( )?(.*)");
             for (String commandText : possibleCommand) {
                 Log.d("Commands",commandText);
                 Matcher matcher = pattern.matcher(commandText);

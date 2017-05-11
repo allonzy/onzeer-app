@@ -16,10 +16,10 @@ import com.example.allonzo.onzeer.controller.CommandEnum;
 import java.util.Collections;
 import java.util.Map;
 
-public class MainActivity extends Activity implements View.OnClickListener{
+public class MainActivity extends Activity implements View.OnClickListener,VocalCommandActivity{
     private CommandAnalyser commandAnalyser;
     private EditText homeSearchInput;
-    private Button vocalCommandButton;
+    private ImageButton vocalCommandButton;
     private ImageButton searchButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +31,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
     private void findViews() {
         homeSearchInput = (EditText)findViewById( R.id.search_input );
-        vocalCommandButton = (Button)findViewById( R.id.vocal_command_button );
+        vocalCommandButton = (ImageButton)findViewById( R.id.vocal_command_button );
         vocalCommandButton.setOnClickListener( this );
         searchButton = (ImageButton)findViewById( R.id.search_button );
         searchButton.setOnClickListener( this );
@@ -63,7 +63,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
             if(commandList.containsKey(CommandEnum.PLAY)){
                 Intent intent = new Intent(this,MusicPlayActivity.class);
                 intent.putExtra("command",CommandEnum.PLAY);
-                intent.putExtra("commandValue",homeSearchInput.getText().toString());
+                intent.putExtra("commandValue",commandAnalyser.get(CommandEnum.PLAY));
                 this.startActivity(intent);
             }/*else if(){
                 //TODO other command
@@ -88,7 +88,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
     public void searchResultAction(){
         //Log.d("searchResult",vocalCommandAnalyser.getCommandResult().toString());
     }
-    public void playAction(){
+    public void onVocalCommandResult(){
         this.dispatchCommands(commandAnalyser.getCommandResult());
     }
 }

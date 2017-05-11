@@ -5,7 +5,10 @@ package com.example.allonzo.onzeer.controller;
  */
 
 public enum  CommandEnum {
-    PLAY("(play|jou[a-z]{0,3})","play"),;
+    PLAY("(play|jou[a-z]{0,3})","play"),
+    STOP("(stop|pause|arret[a-z]{0,3})","stop"),
+    NEXT("(next|suiva[a-z]{0,3})","next"),
+    PREVIOUS("(pr?c?d.{0,4}|reculer|previo[a-z]{0,3})","previous");
     private String commandRegex;
     private String text;
     private CommandEnum(String commandRegex,String text){

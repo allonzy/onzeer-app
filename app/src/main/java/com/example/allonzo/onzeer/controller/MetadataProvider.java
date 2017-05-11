@@ -10,25 +10,30 @@ import java.util.Map;
 
 public class MetadataProvider {
     private static final String WEBSERVICE_URL="http://localhost/onzeer/";
-    private String url;
+    private String streamingUrl;
+    private String title;
     public MetadataProvider(CommandEnum command,String commandValue){
-        this.url=WEBSERVICE_URL+command+"?value="+commandValue;
+        this.streamingUrl="http://radioclassique.ice.infomaniak.ch/radioclassique-high.mp3";
+        title = "Radio Classique";
     }
     public String getTitle(){
-        return "Fun radio";
+        return title;
     }
     public String getStreamingUrl(){
-        return "http://streaming.radio.funradio.fr/fun-1-48-192";
+        return this.streamingUrl;
     }
     public Map<String,String> getMetadata(){
         Map<String,String> metadata = new HashMap<String,String>();
-        metadata.put("radio","fun");
-        metadata.put("tags","radio libre, musique pop");
+        metadata.put("radio","classique");
+        metadata.put("tags","Radio Classique, musique classique");
         return metadata;
 
     }
     public String getNextSuggestion(){
-        return null;
+        this.streamingUrl = "http://broadcast.infomaniak.ch/tsfjazz-high.mp3";
+        this.title = "Jazz";
+
+        return this.streamingUrl;
 
     }
     private void requestMetadata(){

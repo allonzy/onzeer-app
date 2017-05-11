@@ -6,40 +6,42 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:weightSum="1"
     tools:context="com.example.allonzo.onzeer.activities.MainActivity">
 
-    <FrameLayout
-        android:id="@+id/home_main"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1.08">
+        android:layout_height="71dp"
+        android:orientation="horizontal"
+        android:weightSum="1">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal">
+        <EditText
+            android:id="@+id/search_input"
+            style="@android:style/Widget.DeviceDefault.AutoCompleteTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0.96"
+            android:hint="search"
+            android:singleLine="true" />
 
-            <EditText
-                android:id="@+id/search_input"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:hint="search" />
+        <ImageButton
+            android:id="@+id/search_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0.05"
+            app:srcCompat="@drawable/search" />
+    </LinearLayout>
 
-            <ImageButton
-                android:id="@+id/search_button"
-                android:layout_width="44dp"
-                android:layout_height="match_parent"
-                app:srcCompat="@drawable/search" />
-        </LinearLayout>
-    </FrameLayout>
+    <GridView
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_weight="0.27" />
 
-    <Button
+    <ImageButton
         android:id="@+id/vocal_command_button"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.26"
-        android:text="Vocal command" />
+        android:layout_height="wrap_content"
+        android:layout_weight="0.15"
+        app:srcCompat="@drawable/vocal_button" />
 
 </LinearLayout>

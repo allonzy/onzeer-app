@@ -37,6 +37,8 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener{
         this.startMusic();
     }
     public void startMusic(){
+
+        mediaPlayer.stop();
         try {
             mediaPlayer.setDataSource(url);
             mediaPlayer.setOnPreparedListener(this);
@@ -75,17 +77,22 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener{
         return 0;
     }
     public MetadataProvider next() throws MusicPlayerException{
-        try{
-            String url = playList.remove();
-            if (url == null){
+        String url;
+        try {
+            url = playList.remove();
+        }
+        catch (NoSuchElementException e){
+            url = metadataProvider.getNextSuggestion();
+            if(url == null || "".equals(url)){
                 throw new MusicPlayerException();
             }
-            this.url = url;
-            this.startMusic();
-            return this.metadataProvider;
-        }catch (NoSuchElementException e){
-            throw new MusicPlayerException();
         }
+        Log.d("NextURL",url);
+        this.url = url;
+        playHistory.push(url);
+        this.startMusic();
+        return this.metadataProvider;
+
     }
     public MetadataProvider previous() throws MusicPlayerException{
         try{
